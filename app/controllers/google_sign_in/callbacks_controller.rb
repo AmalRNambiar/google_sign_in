@@ -1,8 +1,17 @@
 require 'google_sign_in/redirect_protector'
 
 class GoogleSignIn::CallbacksController < GoogleSignIn::BaseController
+  skip_forgery_protection only: :create
+
   def show
     redirect_to proceed_to_url, flash: { google_sign_in: google_sign_in_response }
+  rescue GoogleSignIn::RedirectProtector::Violation => error
+    logger.error error.message
+    head :bad_request
+  end
+
+  def create
+    redirect_to proceed_to_url, flash: { google_sign_in: google_one_tap_response }
   rescue GoogleSignIn::RedirectProtector::Violation => error
     logger.error error.message
     head :bad_request
@@ -23,8 +32,20 @@ class GoogleSignIn::CallbacksController < GoogleSignIn::BaseController
       { error: error_message_for(error.code) }
     end
 
+    def google_one_tap_response
+      if valid_request? && params[:credential].present?
+        { id_token: params[:credential] }
+      else
+        { error: error_message_for(params[:error]) }
+      end
+    end
+
     def valid_request?
-      flash[:state].present? && params[:state] == flash[:state]
+      if request.get?
+        flash[:state].present? && params[:state] == flash[:state]
+      else
+        request.cookies['_google_auth_session'].present? && params[:g_csrf_token] == request.cookies['g_csrf_token']
+      end
     end
 
     def id_token

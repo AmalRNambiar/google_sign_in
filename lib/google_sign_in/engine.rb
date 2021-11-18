@@ -24,7 +24,7 @@ module GoogleSignIn
     end
 
     initializer 'google_sign_in.parameter_filters' do |app|
-      app.config.filter_parameters << :code
+      app.config.filter_parameters << %i[code credential]
     end
   end
 end
