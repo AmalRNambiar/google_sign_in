@@ -17,7 +17,7 @@ module GoogleSignIn
     private
       def origin_of(url)
         uri = URI(url)
-        "#{uri.scheme}://#{uri.host}:#{uri.port}"
+        "#{uri.scheme}://#{uri.host_with_port}"
       rescue ArgumentError
         nil
       end
