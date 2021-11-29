@@ -44,7 +44,7 @@ class GoogleSignIn::CallbacksController < GoogleSignIn::BaseController
       if request.get?
         flash[:state].present? && params[:state] == flash[:state]
       else
-        request.cookies['g_csrf_token'].present? && params[:g_csrf_token] == request.cookies['g_csrf_token']
+        request.cookies['g_csrf_token'].present? ? params[:g_csrf_token] == request.cookies['g_csrf_token'] : true
       end
     end
 
