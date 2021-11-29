@@ -23,7 +23,7 @@ module GoogleSignIn
       end
 
       def host_with_port(r)
-        "#{r.protocol}://#{r.host_with_port}"
+        r.protocol + r.host_with_port
       end
   end
 end
