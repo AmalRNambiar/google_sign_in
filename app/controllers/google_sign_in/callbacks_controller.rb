@@ -19,7 +19,7 @@ class GoogleSignIn::CallbacksController < GoogleSignIn::BaseController
 
   private
     def proceed_to_url
-      flash[:proceed_to].tap { |url| GoogleSignIn::RedirectProtector.ensure_same_origin(url, request) }
+      flash[:proceed_to].tap { |url| GoogleSignIn::RedirectProtector.ensure_same_origin(url, request.url) }
     end
 
     def google_sign_in_response
